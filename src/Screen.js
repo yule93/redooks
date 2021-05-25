@@ -1,16 +1,14 @@
 import React, {UseContext} from "react";
-import { useFns } from "./Context";
+import { changeLang, useFns, useSetLang, useT } from "./Context";
 import Header from "./Header";
 
-const Screen = () => {
-    const { logUserIn, user: {loggedIn} } = useFns();
+export default () => {
+    const setLang = useSetLang();
+    const t = useT();
     return (
-        <div>
-            <Header />
-            <h1>First screen</h1>
-            <button onClick = {logUserIn}>{loggedIn ? "Log out" : "Log In"}</button>
-        </div>
+        <>
+            <h1>{t("Hello")}</h1>
+            <button onClick = {() => setLang("es")}>Translate</button>
+        </>
     );
 }
-
-export default Screen;

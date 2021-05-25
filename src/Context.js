@@ -1,27 +1,26 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, createContext} from "react";
 
-// Data storage
-export const UserContext = React.createContext();
+const LangContext = createContext();
 
-const UserContextProvider = ({ children }) => {
-    const [user, setUser] = useState({
-        name: "Minjoo",
-        loggedIn: false
-    });
-    const logUserIn = () => setUser({ ...user, loggedIn: true });
-    <UserContext.Provider value={{ user, fn: { logUserIn } }}>
-        {children}
-    </UserContext.Provider>
+const Lang = ({defaultLang, children, translations}) => {
+  const [lang, setLang] = useState(defaultLang);
+  const hyperTranslate = (text) => {
+    if(lang === defaultLang) {
+      return text;
+    }
+  }
+  return <LangContext.Provider value = {{ setLang, t: hyperTranslate }}>
+    {children}
+  </LangContext.Provider>
 }
 
-export const useUser = () => {
-    const { user } = useContext(UserContext);
-    return user;
-  };
-  
-  export const useFns = () => {
-    const { fn } = useContext(UserContext);
-    return fn;
-  };
+export const useSetLang = () =>{
+  const {setLang} = useContext(LangContext);
+  return setLang;
+}
 
-export default UserContextProvider;
+export const useT = () => {
+  const { t } = useContext(LangContext);
+}
+
+export default Lang;
