@@ -19,6 +19,7 @@ const Lang = ({defaultLang, children, translations}) => {
   );
 };
 
+// 이하는 wrapper function 
 export const useSetLang = () =>{
   const {setLang} = useContext(LangContext);
   return setLang;
