@@ -2,29 +2,7 @@ import React, {useReducer, useState} from "react";
 import Screen from "./Screen";
 import Lang from "./Context";
 import translations from "./translations";
-import uuid from "uuid/v4";
-
-const initialState = {
-  toDos: []
-};
-
-const ADD = "add";
-const DEL = "del";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case ADD:
-      return { toDos: [...state.toDos, { text: action.payload, id: uuid() }] };
-      case DEL:
-        return {toDos: state.toDos.filter(toDo => {
-          console.log("Current: ", toDo.id, "Target: ", action.payload);
-          return toDo.id !== action.payload;  // target이랑 다른 아이디면 살아남고 같으면 삭제
-        })
-      };   // filter 함수는 모든 array에 적용됨. 여기서 array는 toDos.
-    default:
-      return;
-  }
-}
+import reducer, { initialState, DEL, ADD, COMPLETE, UNCOMPLETE } from "./reducer";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -59,9 +37,24 @@ function App() {
         {state.toDos.map((toDo) => (
           <li key={toDo.id}>
             <span>{toDo.text}</span>
-            <button onClick = {() => dispatch({ type: DEL, payload: toDo.id })}>Del</button>
+            <span role ="img" aria-label = "delete toDo" onClick = {() => dispatch({ type: DEL, payload: toDo.id })}>❌</span>
+            <span role ="img" aria-label = "complete toDo" onClick = {() => dispatch({ type: COMPLETE, payload: toDo.id })}>✔</span>
           </li>
         ))}
+      </ul>
+      <ul>
+        {state.completed.length !== 0 && (
+          <>
+            <h2>Completed</h2>
+            {state.completed.map((toDo) => (
+              <li key={toDo.id}>
+                <span>{toDo.text}</span>
+                <span role ="img" aria-label = "delete completed" onClick = {() => dispatch({ type: DEL, payload: toDo.id })}>❌</span>
+                <span role ="img" aria-label = "roll back completed to toDo" onClick = {() => dispatch({ type: UNCOMPLETE, payload: toDo.id })}>⏪</span>
+              </li>
+            ))}
+          </>
+        )}
       </ul>
     </>
   );
